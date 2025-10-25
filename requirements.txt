@@ -7,3 +7,7 @@ tencentcloud-sdk-python>=3.0.0
 
 # 异步支持
 asyncio
+
+# 开发工具
+ruff>=0.1.0
+black>=23.0.0

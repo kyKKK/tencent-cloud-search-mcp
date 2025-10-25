@@ -1,23 +1,21 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 """
 Tencent Cloud Search MCP Server (Final Version)
 使用FastMCP框架实现腾讯云搜索API的MCP服务器
 """
 
-import os
 import json
 import logging
+import os
 from typing import Optional
 
 from fastmcp import FastMCP
-
 from tencentcloud.common import credential
+from tencentcloud.common.exception.tencent_cloud_sdk_exception import TencentCloudSDKException
 from tencentcloud.common.profile.client_profile import ClientProfile
 from tencentcloud.common.profile.http_profile import HttpProfile
-from tencentcloud.common.exception.tencent_cloud_sdk_exception import TencentCloudSDKException
-from tencentcloud.wsa.v20250508 import wsa_client, models
+from tencentcloud.wsa.v20250508 import models, wsa_client
 
 # 配置日志 - 支持环境变量控制日志级别
 log_level = os.getenv("LOG_LEVEL", "INFO").upper()

@@ -1,25 +1,27 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 """
 最终版命令行测试工具 - 默认JSON格式，简化参数
 """
 
+import argparse
+import asyncio
+import json
 import os
 import sys
-import json
-import asyncio
-import argparse
-from server import perform_search, perform_generate_timestamp
+
+from server import perform_generate_timestamp, perform_search
 
 
 async def main():
     """主函数"""
     parser = argparse.ArgumentParser(description="腾讯云搜索最终版命令行测试工具")
-    parser.add_argument("query", nargs='?', help="搜索查询字符串（使用--timestamp时可选）")
+    parser.add_argument("query", nargs="?", help="搜索查询字符串（使用--timestamp时可选）")
     parser.add_argument("-n", "--num", type=int, default=5, help="返回结果数量 (默认5)")
     parser.add_argument("-o", "--offset", type=int, default=0, help="结果偏移量 (默认0)")
-    parser.add_argument("-m", "--mode", type=int, choices=[0, 1, 2], default=0, help="搜索模式: 0=自然检索, 1=多模态, 2=混合 (默认0)")
+    parser.add_argument(
+        "-m", "--mode", type=int, choices=[0, 1, 2], default=0, help="搜索模式: 0=自然检索, 1=多模态, 2=混合 (默认0)"
+    )
     parser.add_argument("-s", "--site", help="站内搜索域名，例如: github.com")
     parser.add_argument("--from-time", type=int, help="起始时间戳 (精确到秒)")
     parser.add_argument("--to-time", type=int, help="结束时间戳 (精确到秒)")
@@ -52,6 +54,7 @@ async def main():
             print(f"❌ 时间戳生成失败: {e}")
             if args.debug:
                 import traceback
+
                 traceback.print_exc()
             sys.exit(1)
 
@@ -98,7 +101,7 @@ async def main():
             mode=args.mode,
             site=args.site,
             from_time=args.from_time,
-            to_time=args.to_time
+            to_time=args.to_time,
         )
 
         # 输出JSON结果
@@ -122,6 +125,7 @@ async def main():
         print(f"❌ 搜索失败: {e}")
         if args.debug:
             import traceback
+
             traceback.print_exc()
         sys.exit(1)
 
