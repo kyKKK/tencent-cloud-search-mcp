@@ -1,0 +1,12 @@
+{
+  "name": "tencent-cloud-search",
+  "version": "1.0.0",
+  "description": "MCP server for Tencent Cloud Search API",
+  "main": "server.py",
+  "scripts": {
+    "start": "python server.py"
+  },
+  "dependencies": {
+    "mcp": "^1.0.0"
+  }
+}
