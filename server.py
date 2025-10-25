@@ -73,7 +73,7 @@ def format_search_results_json(result_data: dict, query: str) -> str:
     # 检查是否有结果 - 根据官方文档，结果在Pages字段中
     if "Pages" not in result_data or not result_data["Pages"]:
         no_results = {"query": query, "results": [], "count": 0, "message": "未找到相关结果"}
-        return json.dumps(no_results, ensure_ascii=False, indent=2)
+        return json.dumps(no_results, ensure_ascii=False, separators=(',', ':'))
 
     # 解析Pages数组中的JSON字符串
     pages_data = result_data["Pages"]
@@ -103,7 +103,7 @@ def format_search_results_json(result_data: dict, query: str) -> str:
 
     if not parsed_results:
         no_results = {"query": query, "results": [], "count": 0, "message": "所有结果解析失败"}
-        return json.dumps(no_results, ensure_ascii=False, indent=2)
+        return json.dumps(no_results, ensure_ascii=False, separators=(',', ':'))
 
     # JSON格式 - 返回完整的官方格式数据
     structured_data = {"query": query, "results": parsed_results, "count": len(parsed_results)}
@@ -114,7 +114,7 @@ def format_search_results_json(result_data: dict, query: str) -> str:
     if "RequestId" in result_data:
         structured_data["request_id"] = result_data["RequestId"]
 
-    return json.dumps(structured_data, ensure_ascii=False, indent=2)
+    return json.dumps(structured_data, ensure_ascii=False, separators=(',', ':'))
 
 
 async def perform_search(
@@ -231,14 +231,14 @@ async def perform_generate_timestamp(
 
         # 返回JSON格式的时间戳信息
         timestamp_info = {"timestamp": timestamp, "datetime": dt.strftime("%Y-%m-%d %H:%M:%S"), "timezone": "UTC"}
-        return json.dumps(timestamp_info, ensure_ascii=False, indent=2)
+        return json.dumps(timestamp_info, ensure_ascii=False, separators=(',', ':'))
 
     except ValueError as e:
         error_info = {"error": "日期时间无效", "message": str(e), "hint": "请检查输入的年月日时分秒是否正确"}
-        return json.dumps(error_info, ensure_ascii=False, indent=2)
+        return json.dumps(error_info, ensure_ascii=False, separators=(',', ':'))
     except Exception as e:
         error_info = {"error": "生成时间戳失败", "message": str(e)}
-        return json.dumps(error_info, ensure_ascii=False, indent=2)
+        return json.dumps(error_info, ensure_ascii=False, separators=(',', ':'))
 
 
 @mcp.tool()
@@ -345,7 +345,7 @@ async def search_health_check() -> str:
             "message": "腾讯云搜索服务配置正常，可以开始使用搜索功能",
             "service": "tencent-cloud-search",
         }
-        return json.dumps(status_info, ensure_ascii=False, indent=2)
+        return json.dumps(status_info, ensure_ascii=False, separators=(',', ':'))
     except ValueError as e:
         error_info = {
             "status": "error",
@@ -353,7 +353,7 @@ async def search_health_check() -> str:
             "message": str(e),
             "service": "tencent-cloud-search",
         }
-        return json.dumps(error_info, ensure_ascii=False, indent=2)
+        return json.dumps(error_info, ensure_ascii=False, separators=(',', ':'))
     except Exception as e:
         error_info = {
             "status": "error",
@@ -361,7 +361,7 @@ async def search_health_check() -> str:
             "message": f"服务检查失败: {e}",
             "service": "tencent-cloud-search",
         }
-        return json.dumps(error_info, ensure_ascii=False, indent=2)
+        return json.dumps(error_info, ensure_ascii=False, separators=(',', ':'))
 
 
 if __name__ == "__main__":
