@@ -12,7 +12,9 @@ from typing import Optional
 
 from fastmcp import FastMCP
 from tencentcloud.common import credential
-from tencentcloud.common.exception.tencent_cloud_sdk_exception import TencentCloudSDKException
+from tencentcloud.common.exception.tencent_cloud_sdk_exception import (
+    TencentCloudSDKException,
+)
 from tencentcloud.common.profile.client_profile import ClientProfile
 from tencentcloud.common.profile.http_profile import HttpProfile
 from tencentcloud.wsa.v20250508 import models, wsa_client
@@ -20,7 +22,8 @@ from tencentcloud.wsa.v20250508 import models, wsa_client
 # 配置日志 - 支持环境变量控制日志级别
 log_level = os.getenv("LOG_LEVEL", "INFO").upper()
 logging.basicConfig(
-    level=getattr(logging, log_level, logging.INFO), format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    level=getattr(logging, log_level, logging.INFO),
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
 )
 logger = logging.getLogger("tencent-cloud-search")
 
@@ -72,7 +75,12 @@ def format_search_results_json(result_data: dict, query: str) -> str:
 
     # 检查是否有结果 - 根据官方文档，结果在Pages字段中
     if "Pages" not in result_data or not result_data["Pages"]:
-        no_results = {"query": query, "results": [], "count": 0, "message": "未找到相关结果"}
+        no_results = {
+            "query": query,
+            "results": [],
+            "count": 0,
+            "message": "未找到相关结果",
+        }
         return json.dumps(no_results, ensure_ascii=False, separators=(",", ":"))
 
     # 解析Pages数组中的JSON字符串
@@ -102,11 +110,20 @@ def format_search_results_json(result_data: dict, query: str) -> str:
             continue
 
     if not parsed_results:
-        no_results = {"query": query, "results": [], "count": 0, "message": "所有结果解析失败"}
+        no_results = {
+            "query": query,
+            "results": [],
+            "count": 0,
+            "message": "所有结果解析失败",
+        }
         return json.dumps(no_results, ensure_ascii=False, separators=(",", ":"))
 
     # JSON格式 - 返回完整的官方格式数据
-    structured_data = {"query": query, "results": parsed_results, "count": len(parsed_results)}
+    structured_data = {
+        "query": query,
+        "results": parsed_results,
+        "count": len(parsed_results),
+    }
 
     # 添加其他官方字段
     if "Msg" in result_data:
@@ -141,7 +158,14 @@ async def perform_search(
     Returns:
         JSON格式的搜索结果字符串
     """
-    logger.debug("开始搜索请求: query='%s', num=%d, offset=%d, mode=%d, site=%s", query, num, offset, mode, site)
+    logger.debug(
+        "开始搜索请求: query='%s', num=%d, offset=%d, mode=%d, site=%s",
+        query,
+        num,
+        offset,
+        mode,
+        site,
+    )
 
     try:
         if not query.strip():
@@ -158,7 +182,12 @@ async def perform_search(
         client = create_wsa_client()
 
         # 构建请求参数
-        request_params = {"Query": query, "Num": min(num, 50), "Offset": offset, "Mode": mode}  # 确保不超过API限制
+        request_params = {
+            "Query": query,
+            "Num": min(num, 50),
+            "Offset": offset,
+            "Mode": mode,
+        }  # 确保不超过API限制
 
         # 添加可选参数（仅在有效模式下添加）
         if mode == 0 or mode == 2:  # 自然检索模式
@@ -230,11 +259,19 @@ async def perform_generate_timestamp(
         timestamp = int(dt.timestamp())
 
         # 返回JSON格式的时间戳信息
-        timestamp_info = {"timestamp": timestamp, "datetime": dt.strftime("%Y-%m-%d %H:%M:%S"), "timezone": "UTC"}
+        timestamp_info = {
+            "timestamp": timestamp,
+            "datetime": dt.strftime("%Y-%m-%d %H:%M:%S"),
+            "timezone": "UTC",
+        }
         return json.dumps(timestamp_info, ensure_ascii=False, separators=(",", ":"))
 
     except ValueError as e:
-        error_info = {"error": "日期时间无效", "message": str(e), "hint": "请检查输入的年月日时分秒是否正确"}
+        error_info = {
+            "error": "日期时间无效",
+            "message": str(e),
+            "hint": "请检查输入的年月日时分秒是否正确",
+        }
         return json.dumps(error_info, ensure_ascii=False, separators=(",", ":"))
     except Exception as e:
         error_info = {"error": "生成时间戳失败", "message": str(e)}
@@ -299,12 +336,20 @@ async def tencent_search(
         - 混合模式(mode=2)提供最全面的结果
     """
     return await perform_search(
-        query=query, num=num, offset=offset, mode=mode, site=site, from_time=from_time, to_time=to_time
+        query=query,
+        num=num,
+        offset=offset,
+        mode=mode,
+        site=site,
+        from_time=from_time,
+        to_time=to_time,
     )
 
 
 @mcp.tool()
-async def generate_timestamp(year: int, month: int, day: int, hour: int = 0, minute: int = 0, second: int = 0) -> str:
+async def generate_timestamp(
+    year: int, month: int, day: int, hour: int = 0, minute: int = 0, second: int = 0
+) -> str:
     """
     生成Unix时间戳 - 用于时间范围搜索的辅助工具，返回JSON格式
 
